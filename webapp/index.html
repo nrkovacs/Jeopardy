@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jeopardy! Practice Board</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>Jeopardy! Practice Board</h1>
+      <p class="tagline">
+        Play through real Kids Week and Teen Tournament boards drawn from the Cluebase data set.
+      </p>
+    </header>
+
+    <main>
+      <section class="controls">
+        <label for="gameSelect">Choose a board:</label>
+        <select id="gameSelect"></select>
+        <button id="resetButton" type="button">Reset Board</button>
+      </section>
+
+      <p class="instructions">
+        Click a dollar value to reveal the clue. Use the buttons to score yourself, and clear both rounds to unlock Final Jeopardy when it is available in the data set.
+      </p>
+
+      <section class="status">
+        <div class="score">Score: <span id="scoreValue">0</span></div>
+        <div class="round" id="roundLabel">Loading…</div>
+        <div class="notes" id="gameNotes"></div>
+      </section>
+
+      <section class="board" id="boardContainer" aria-live="polite"></section>
+
+      <section class="final-jeopardy" id="finalJeopardy"></section>
+    </main>
+
+    <div id="clueModal" class="modal" hidden>
+      <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="clueCategory">
+        <header>
+          <div id="modalRound" class="modal-round"></div>
+          <div id="clueCategory" class="modal-category"></div>
+          <div id="clueValue" class="modal-value"></div>
+        </header>
+        <div id="clueText" class="modal-clue"></div>
+        <div id="dailyDouble" class="daily-double" hidden>Daily Double!</div>
+        <div id="wagerControls" class="wager" hidden>
+          <label for="wagerInput">Wager:</label>
+          <input id="wagerInput" type="number" min="0" step="100" />
+        </div>
+        <div id="responseSection" class="response" hidden>
+          <h3>Response</h3>
+          <p id="clueResponse"></p>
+        </div>
+        <div class="modal-actions">
+          <button id="showResponseButton" type="button">Show Response</button>
+          <button id="correctButton" type="button">I got it right</button>
+          <button id="incorrectButton" type="button">I got it wrong</button>
+          <button id="closeButton" type="button">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <template id="boardTemplate">
+      <div class="round-header"></div>
+      <div class="grid" role="grid"></div>
+    </template>
+
+    <template id="categoryTemplate">
+      <div class="category" role="columnheader"></div>
+    </template>
+
+    <template id="clueTemplate">
+      <button class="clue" type="button"></button>
+    </template>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>
