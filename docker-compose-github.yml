@@ -1,31 +1,21 @@
 version: '3.7'
 
 services:
-
-  flask:
+  gemini_ai:
     build:
-      context: ./flask
+      context: ./gemini_ai
       dockerfile: Dockerfile
-    volumes:
-      - './flask:/usr/src/app/'
     ports:
-      - 5001:5000
+      - 5000:5000
     environment:
       - FLASK_ENV=development
-      - APP_SETTINGS=app.config.DevelopmentConfig
-      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/jeopardy
-      - DATABASE_TEST_URL=postgres://postgres:postgres@postgres:5432/jeopardy_test
-    depends_on:
-      - postgres
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
 
-  postgres:
+  nginx:
     build:
-      context: ./postgres
+      context: ./nginx
       dockerfile: Dockerfile
-    volumes:
-      - ./postgres/init:/docker-entrypoint-initdb.d
     ports:
-      - 5435:5432
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - 80:80
+    depends_on:
+      - gemini_ai

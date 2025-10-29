@@ -167,6 +167,10 @@ main {
   font-size: 1rem;
 }
 
+.modal[hidden] {
+  pointer-events: none;
+}
+
 .modal {
   position: fixed;
   inset: 0;

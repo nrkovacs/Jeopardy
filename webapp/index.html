@@ -44,6 +44,7 @@
           <div id="clueValue" class="modal-value"></div>
         </header>
         <div id="clueText" class="modal-clue"></div>
+        <div id="aiHost" class="ai-host"></div>
         <div id="dailyDouble" class="daily-double" hidden>Daily Double!</div>
         <div id="wagerControls" class="wager" hidden>
           <label for="wagerInput">Wager:</label>
@@ -52,6 +53,11 @@
         <div id="responseSection" class="response" hidden>
           <h3>Response</h3>
           <p id="clueResponse"></p>
+        </div>
+        <div class="user-response">
+          <textarea id="userAnswer" placeholder="Your answer..." rows="2"></textarea>
+          <button id="micButton" type="button">🎤</button>
+          <button id="judgeButton" type="button">Judge Answer</button>
         </div>
         <div class="modal-actions">
           <button id="showResponseButton" type="button">Show Response</button>

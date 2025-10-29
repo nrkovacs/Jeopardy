@@ -19,6 +19,7 @@ const modalRound = document.querySelector('#modalRound');
 const modalCategory = document.querySelector('#clueCategory');
 const modalValue = document.querySelector('#clueValue');
 const modalText = document.querySelector('#clueText');
+const aiHost = document.querySelector('#aiHost');
 const modalResponse = document.querySelector('#clueResponse');
 const responseSection = document.querySelector('#responseSection');
 const dailyDoubleNotice = document.querySelector('#dailyDouble');
@@ -28,6 +29,9 @@ const showResponseButton = document.querySelector('#showResponseButton');
 const correctButton = document.querySelector('#correctButton');
 const incorrectButton = document.querySelector('#incorrectButton');
 const closeButton = document.querySelector('#closeButton');
+const micButton = document.querySelector('#micButton');
+const userAnswer = document.querySelector('#userAnswer');
+const judgeButton = document.querySelector('#judgeButton');
 
 const boardTemplate = document.querySelector('#boardTemplate');
 const categoryTemplate = document.querySelector('#categoryTemplate');
@@ -77,6 +81,59 @@ async function init() {
       closeModal();
     }
   });
+
+  let recognition;
+  if ('webkitSpeechRecognition' in window) {
+    recognition = new webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      userAnswer.value = transcript;
+    };
+
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error:', event.error);
+    };
+  }
+
+  micButton.addEventListener('click', () => {
+    if (recognition) {
+      recognition.start();
+    }
+  });
+
+  window.startSpeechRecognition = () => {
+    if (recognition) {
+      recognition.start();
+    }
+  };
+
+  judgeButton.addEventListener('click', async () => {
+    if (state.activeClue) {
+      const userResponse = userAnswer.value;
+      const correctResponse = state.activeClue.data.response;
+      await judgeAnswer(userResponse, correctResponse);
+    }
+  });
+}
+
+async function judgeAnswer(userAnswer, correctAnswer) {
+  try {
+    const response = await fetch('/api/judge', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userAnswer, correctAnswer }),
+    });
+    const data = await response.json();
+    alert(data.feedback);
+    resolveClue(data.correct);
+  } catch (error) {
+    console.error('Error judging answer:', error);
+    alert('Sorry, I was unable to judge your answer.');
+  }
 }
 
 function populateGameSelect(games) {
@@ -240,6 +297,27 @@ function onClueClick(event) {
 
   modal.hidden = false;
   document.body.style.overflow = 'hidden';
+
+  narrateClue(data.text);
+  startSpeechRecognition();
+}
+
+async function narrateClue(clueText) {
+  aiHost.textContent = 'Thinking...';
+  try {
+    const response = await fetch('/api/narrate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ clue: clueText }),
+    });
+    const data = await response.json();
+    aiHost.textContent = data.narration;
+  } catch (error) {
+    console.error('Error narrating clue:', error);
+    aiHost.textContent = 'Sorry, I am unable to narrate at the moment.';
+  }
 }
 
 function categoryTitleForKey(key) {
