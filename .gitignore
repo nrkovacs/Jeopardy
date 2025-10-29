@@ -3,3 +3,4 @@ __pycache__
 docker-compose.yml
 docker-compose-prod.yml
 flask/app/oldinit.py
+node_modules/

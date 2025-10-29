@@ -1,0 +1,9 @@
+{
+  "name": "jeopardy",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test webapp/__tests__/logic.test.js"
+  }
+}
